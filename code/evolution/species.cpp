@@ -1,5 +1,5 @@
 #include "species.h"
-#include "distributions.h"
+#include "parameters.h"
 #include <iostream>
 
 // Declaring species
