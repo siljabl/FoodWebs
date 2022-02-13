@@ -8,5 +8,8 @@ Simulating evolution of food webs through successive additions of invasive speci
 
 ***random_matrix.cpp***: computing eigenvalues of random matrices.
 
-Most parameters are defined in *distributions.h* . Upper limit on species richness is set in *species.h* and total number of invasion attempts is set in *main.cpp / main_typeII.cpp*.
+Most parameters are defined in *parameters.h* . Upper limit on species richness is set in *species.h* and total number of invasion attempts is set in *main.cpp / main_typeII.cpp*.
 
+---
+
+This project uses [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page 'Eigen') for matrix operations.
