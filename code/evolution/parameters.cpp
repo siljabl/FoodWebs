@@ -1,4 +1,4 @@
-#include "distributions.h"
+#include "parameters.h"
 #include <cstdlib>
 #include <cmath>
 #include <random>
