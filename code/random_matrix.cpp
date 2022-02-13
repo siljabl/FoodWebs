@@ -1,7 +1,7 @@
 
 // Script to compute eigenvalues of random matrices
 
-#include "evolution/distributions.cpp"
+#include "evolution/parameters.cpp"
 #include <iostream>
 #include <fstream>
 #include <random>
