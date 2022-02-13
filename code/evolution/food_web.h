@@ -1,5 +1,5 @@
 #pragma once
-#include "distributions.h"
+#include "parameters.h"
 #include "stability_analysis.h"
 
 
