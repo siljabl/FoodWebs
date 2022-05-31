@@ -36,21 +36,13 @@ cout << "Enter size of community matrix: ";
 cin >> N;
 
 // occupation probability, propotional to species richness
-double pProd = ((double)(N + 2) / (3 * N));
-double p1link = ((double) 1 / 3);
-double p2link = ((double)(N - 2) / (3 * N)); 
-
-double lProd = pProd;
-double l1link = ((double) 1 / (N - 1));
-double l2link = ((double) 2 / (N - 1));
-double prob = pProd * lProd + 2 * p1link * l1link + 2 * p2link * l2link;		// occupation probability
+double prob = ((double)(N*N + 21*N - 28)) / (9*N*(N-1));
 cout << "Occupation probability: " << prob << endl;
 
 ofstream file("../data/random_matrix/EigenMay_N" + to_string(N) + ".txt");
 
 for(int rep=0; rep<Nrep; rep++) {
 	MatrixXd C(N, N);		// community matrix
-	mat aC = zeros(N, N); 	// community matrix
 	
 	random_device rd;
 	mt19937 e2(rd());
@@ -77,13 +69,13 @@ for(int rep=0; rep<Nrep; rep++) {
 	}
 
 	// Check condition number
-	FullPivLU<MatrixXd> lu(eC);
-	JacobiSVD<MatrixXd> svd(eC);
+	FullPivLU<MatrixXd> lu(C);
+	JacobiSVD<MatrixXd> svd(C);
 	double cond = svd.singularValues()(0) / svd.singularValues()(svd.singularValues().size()-1);
 
 
 	// computing eigenvalues
-	EigenSolver<MatrixXd> ES(eC);
+	EigenSolver<MatrixXd> ES(C);
 	VectorXcd Eigval(N);			// Eigen values
 	Eigval = ES.eigenvalues();
 
