@@ -224,10 +224,10 @@
 
 //	SAVING PARAMETERS
 	void saveEigenvalues(VectorXcd eigenvalues, ofstream& file, int addAttempt) {
-		// addAttempt and number of Species
+		// addAttempt and number of species
 		file << addAttempt << " " << Species::nTotal << " ";
 
-		// eigenvalues of all Species in food webs
+		// eigenvalues of all species in food webs
 		for (int i = 0; i < Species::nTotal; i++) {
 			file << eigenvalues(i).real() << " " << eigenvalues(i).imag() << " ";
 		}
@@ -240,6 +240,25 @@
 		file << endl;
 	}
 
+
+	void saveEigenvectors(MatrixXcd eigenvectors, ofstream& file, int addAttempt) {
+		// addAttempt and number of species
+		file << addAttempt << " " << Species::nTotal << " ";
+
+		// eigenvectors of all species in food webs
+		for (int i = 0; i < Species::nTotal; i++) {
+			for (int j = 0; j < Species::nTotal; j++) {
+				file << eigenvectors(j,i).real() << " " << eigenvectors(j,i).imag() << " ";
+			}
+		}
+
+		// zeroes for all empty entries in S[] and P[]
+		for (int i = Species::nTotal * Species::nTotal; i < nMAX * nMAX; i++) {
+			file << 0 << " " << 0 << " ";
+		}
+
+		file << endl;
+	}
 
 
 	void saveParameters(Species S[], Producer P[], ofstream& sFile, ofstream& pFile, int addAttempt) {
@@ -280,7 +299,7 @@
 
 
 //	INVESTIGATING LINEAR STABILITY
-	void checkFeasibility(Species S[], Producer P[], double steadyStates[], ofstream& stabEigen, ofstream& unstabEigen, int addAttempt) {
+	void checkFeasibility(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, int addAttempt) {
 		//	COMPUTING S* = R^(-1)*k
 		// declaring vectors and matrices
 		MatrixXd R(Species::nTotal, Species::nTotal);
@@ -331,7 +350,7 @@
 			cout << "The system does have a feasible steady state!\n";
 			
 			// checking for linear stability
-			checkLinearStability(S, P, steadyStates, stabEigen, unstabEigen, addAttempt);		
+			checkLinearStability(S, P, steadyStates, stabVal, unstabVal, stabVec, unstabVec, addAttempt);		
 			cout << "---------------\n Steady states: \n---------------\n";
 			cout << Ssteady << "\n---------------\n\n";		
 		}
@@ -346,10 +365,11 @@
 	}
 
 
-	void checkLinearStability(Species S[], Producer P[], double steadyStates[], ofstream& stabEigen, ofstream& unstabEigen, int addAttempt)	{
+	void checkLinearStability(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, int addAttempt)	{
 		//	INITIALIZING
 		// declaring matrix and arrays
 		MatrixXd C(Species::nTotal, Species::nTotal);
+		MatrixXcd eigenvectors(Species::nTotal, Species::nTotal);
 		VectorXcd eigenvalues(Species::nTotal);
 		Species S_temp[nMAX];
 		Producer P_temp[nMAX];
@@ -369,7 +389,14 @@
 		// computing eigenvalues of Jacobian
 		EigenSolver<MatrixXd> es(C);
 		eigenvalues = es.eigenvalues();
-
+		eigenvectors = es.eigenvectors();
+		cout << C * eigenvectors << endl;
+		for (int i = 0; i < Species::nTotal; i++) {
+			for (int j = 0; j < Species::nTotal; j++) {
+				cout << eigenvectors(j,i).real() * eigenvalues(i).real() - eigenvectors(j,i).imag() * eigenvalues(i).imag() << " ";
+				cout << eigenvectors(j,i).imag() * eigenvalues(i).real() + eigenvectors(j,i).real() * eigenvalues(i).imag() << " ";
+			}
+		}
 		
 		//	CHECKING LINEAR STABILITY
 		// if linearly stable
@@ -378,7 +405,8 @@
 			FoodWeb::stable = true;
 
 			cout << "The steady states are linearly stable!\n\n";
-			saveEigenvalues(eigenvalues, stabEigen, addAttempt);
+			saveEigenvalues(eigenvalues, stabVal, addAttempt);
+			saveEigenvectors(eigenvectors, stabVec, addAttempt);
 		}
 
 		else {
@@ -386,13 +414,14 @@
 			FoodWeb::stable = false;
 
 			cout << "The steady states are not linearly stable.\n\n";
-			saveEigenvalues(eigenvalues, unstabEigen, addAttempt);
+			saveEigenvalues(eigenvalues, unstabVal, addAttempt);
+			saveEigenvectors(eigenvectors, unstabVec, addAttempt);
 		}
 	}
 
 
 
-void compEig(Species S[], Producer P[], ofstream& stabEigen, ofstream& unstabEigen, int addAttempt)	{
+void compEig(Species S[], Producer P[], ofstream& stabVal, ofstream& unstabVal, int addAttempt)	{
 		//	INITIALIZING
 		// declaring matrix and arrays
 		MatrixXd C(Species::nTotal, Species::nTotal);
@@ -435,7 +464,7 @@ void compEig(Species S[], Producer P[], ofstream& stabEigen, ofstream& unstabEig
 			FoodWeb::stable = true;
 
 			cout << "The steady states are linearly stable!\n\n";
-			saveEigenvalues(eigenvalues, stabEigen, addAttempt);
+			saveEigenvalues(eigenvalues, stabVal, addAttempt);
 		}
 
 		else {
@@ -443,6 +472,6 @@ void compEig(Species S[], Producer P[], ofstream& stabEigen, ofstream& unstabEig
 			FoodWeb::stable = false;
 
 			cout << "The steady states are not linearly stable.\n\n";
-			saveEigenvalues(eigenvalues, unstabEigen, addAttempt);
+			saveEigenvalues(eigenvalues, unstabVal, addAttempt);
 		}
 	}

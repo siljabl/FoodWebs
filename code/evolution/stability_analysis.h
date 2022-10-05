@@ -43,15 +43,18 @@ using namespace std;
 	void saveEigenvalues(VectorXcd eigenvalues, ofstream& file, int addAttempt);
 	// saving eigenvalues of all Species in food web
 
+	void saveEigenvectors(MatrixXcd eigenvalues, ofstream& file, int addAttempt);
+	// saving eigenvalues of all Species in food web
+
 	void saveParameters(Species S[], Producer P[], ofstream& sFile, ofstream& pFile, int addAttempt);
 	// saving parameters of all Species in food web
 
 
 //	INVESTIGATING LINEAR STABILITY
-	void checkFeasibility(Species S[], Producer P[], double steadyStates[], ofstream& stabFile, ofstream& unstabFile, int addAttempt);
+	void checkFeasibility(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, int addAttempt);
 	// checking if food web is feasible
 
-	void checkLinearStability(Species S[], Producer P[], double steadyStates[], ofstream& stabFile, ofstream& unstabFile, int addAttempt);
+	void checkLinearStability(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, int addAttempt);
 	// checking if food web is linearly stable
 
 	void compEig(Species S[], Producer P[], ofstream& stabFile, ofstream& unstabFile, int addAttempt);

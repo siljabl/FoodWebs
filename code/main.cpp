@@ -33,8 +33,10 @@ int main() {
 
 //	FILES
 	// data is saved as: iteration - number of species - real - imaginary
-	ofstream stabEigen("../data/"+folder+"/eig_stab.txt");			// eigenvalues of linearly stable food web
-	ofstream ustabEigen("../data/"+folder+"/eig_unstab.txt");		// eigenvalues of linearly unstable food web
+	ofstream stabVal("../data/"+folder+"/eigval_stab.txt");			// eigenvalues of linearly stable food web
+	ofstream ustabVal("../data/"+folder+"/eigval_unstab.txt");		// eigenvalues of linearly unstable food web
+	ofstream stabVec("../data/"+folder+"/eigvec_stab.txt");			// eigenvalues of linearly stable food web
+	ofstream ustabVec("../data/"+folder+"/eigvec_unstab.txt");		// eigenvalues of linearly unstable food web
 
 	// data is saved as:
 	// iteration - number of Species - feasibility - stability - convergence
@@ -62,8 +64,8 @@ int main() {
 	S[0] = s;
 
 	// running food web
-	checkFeasibility(S, P, steadyStates, stabEigen, ustabEigen, 0);
-	timeSeries(S, P, steadyStates, stabEigen, ustabEigen, webData, 0);
+	checkFeasibility(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, 0);
+	timeSeries(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, webData, 0);
 	saveParameters(S, P, sFile, pFile, 0);
 
 
@@ -84,8 +86,8 @@ int main() {
 		cout << ", number of Producers " << Producer::nProducer << endl << endl;
 
 		// running time series
-		checkFeasibility(S, P, steadyStates, stabEigen, ustabEigen, addAttempt);
-		timeSeries(S, P, steadyStates, stabEigen, ustabEigen, webData, addAttempt);
+		checkFeasibility(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, addAttempt);
+		timeSeries(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, webData, addAttempt);
 
 		if (Species::nTotal == 0) {
 			Producer s(addAttempt);
@@ -93,16 +95,18 @@ int main() {
 			S[0] = s;
 
 			// running food web
-			checkFeasibility(S, P, steadyStates, stabEigen, ustabEigen, 0);
-			timeSeries(S, P, steadyStates, stabEigen, ustabEigen, webData, 0);
+			checkFeasibility(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, 0);
+			timeSeries(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, webData, 0);
 			saveParameters(S, P, sFile, pFile, 0);
 		}
 		updateTrophicLevel(S);
 	}
 	
 	// closing all files
-	stabEigen.close();
-	ustabEigen.close();
+	stabVal.close();
+	ustabVal.close();
+	stabVec.close();
+	ustabVec.close();
 	webData.close();
 	sFile.close();
 	pFile.close();

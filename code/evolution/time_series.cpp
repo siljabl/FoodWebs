@@ -286,7 +286,7 @@ double RKF45(Species S[], Producer P[], double dt) {
 }
 
 
-bool checkForExtinction(Species S[], Producer P[], double steadyStates[], ofstream& stabEigen, ofstream& unstabEigen, ofstream& webData, int addAttempt) {
+bool checkForExtinction(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, ofstream& webData, int addAttempt) {
 	int k, i = 0;
 	// determining Species with the smallest density
 	for (k = 0; k < Species::nTotal; k++) {
@@ -310,7 +310,7 @@ bool checkForExtinction(Species S[], Producer P[], double steadyStates[], ofstre
 		removeSpecies(S, P, i);
 
 		// checking if food web has steady state after removal of extinct Species
-		checkFeasibility(S, P, steadyStates, stabEigen, unstabEigen, addAttempt);
+		checkFeasibility(S, P, steadyStates, stabVal, unstabVal, stabVec, unstabVec, addAttempt);
 			
 		// saving behavior of new food web
 		webData << addAttempt << " " << Species::nTotal << " " << FoodWeb::feasible << " " << FoodWeb::stable << " ";
@@ -542,7 +542,7 @@ bool decreasing(Species S[], Producer P[], double steadyStates[]) {
 }
 
 
-void timeSeries(Species S[], Producer P[], double steadyStates[], ofstream& stab_file, ofstream& unstab_file, ofstream& webData, int iter) {
+void timeSeries(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, ofstream& webData, int iter) {
 	double t = 0;
 	double tTot = 0;
 	double dt = 0.01;
@@ -564,7 +564,7 @@ void timeSeries(Species S[], Producer P[], double steadyStates[], ofstream& stab
 		RK4(S, P, dt);
 	
 		// checking for extinction
-		bool extinctionEvent = checkForExtinction(S, P, steadyStates, stab_file, unstab_file, webData, iter);
+		bool extinctionEvent = checkForExtinction(S, P, steadyStates, stabVal, unstabVal, stabVec, unstabVec, webData, iter);
 
 		if (extinctionEvent) {
 			// restarting temporal counter after extinction
@@ -581,7 +581,7 @@ void timeSeries(Species S[], Producer P[], double steadyStates[], ofstream& stab
 					if (dt < 0.01) { dt = 0.01; }
 					RK4(S, P, dt);
 
-					secondExtinctionEvent = checkForExtinction(S, P, steadyStates, stab_file, unstab_file, webData, iter);				
+					secondExtinctionEvent = checkForExtinction(S, P, steadyStates, stabVal, unstabVal, stabVec, unstabVec, webData, iter);				
 				}
 
 				if (!secondExtinctionEvent) {

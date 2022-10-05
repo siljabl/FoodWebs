@@ -185,7 +185,7 @@ using namespace std;
 			S[index] = s;
 	
 			// printing paramters of new producer	
-			P[index].printParameters(index);
+			// P[index].printParameters(index);
 		}
 
 		// new species is not a producer
@@ -221,7 +221,7 @@ using namespace std;
 			}
 				
 			// printing Species parameters
-			S[index].printParameters(index);
+			// S[index].printParameters(index);
 		}
 	}
 
