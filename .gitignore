@@ -1,3 +1,5 @@
 *.egg-info
 data
 private
+scripts
+results
