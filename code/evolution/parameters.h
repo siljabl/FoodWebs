@@ -7,7 +7,7 @@
 const double initialDensity = 1e-10;
 const double defaultKappa = 1;
 const double defaultBeta = 0.75;
-const double h = 0.1;					// type-II parameter
+const double h = 0;					// type-II parameter
 
 // default threshold
 const double epsilon = 1e-14;
@@ -15,7 +15,7 @@ const double epsilon = 1e-14;
 // lower limit on species richness before allowing species with two resources
 const int nMin = 2;
 const bool omnivorous = true;
-const int responseType = 2; 		// 1 or 2
+const int responseType = 1; 		// 1 or 2
 
 
 //DISTRIBUTIONS

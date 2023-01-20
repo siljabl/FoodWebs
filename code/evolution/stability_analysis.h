@@ -43,18 +43,21 @@ using namespace std;
 	void saveEigenvalues(VectorXcd eigenvalues, ofstream& file, int addAttempt);
 	// saving eigenvalues of all Species in food web
 
-	void saveEigenvectors(MatrixXcd eigenvalues, ofstream& file, int addAttempt);
+	void saveEigenvectors(VectorXcd eigenvalues, MatrixXcd eigenvectors, ofstream& file, int addAttempt);
 	// saving eigenvalues of all Species in food web
 
-	void saveParameters(Species S[], Producer P[], ofstream& sFile, ofstream& pFile, int addAttempt);
+	void saveOthers(Species S[], Producer P[], VectorXcd eigenvalues, ofstream& biomass, ofstream& level, ofstream& links, int addAttempt);
+	// saving biomass and level for easy access
+
+	void saveParameters(Species S[], Producer P[], double steadyStates[], ofstream& sFile, ofstream& pFile, int addAttempt);
 	// saving parameters of all Species in food web
 
 
 //	INVESTIGATING LINEAR STABILITY
-	void checkFeasibility(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, int addAttempt);
+	void checkFeasibility(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, ofstream& biomass, ofstream& level, ofstream& links, int addAttempt);
 	// checking if food web is feasible
 
-	void checkLinearStability(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, int addAttempt);
+	void checkLinearStability(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, ofstream& biomass, ofstream& level, ofstream& links, int addAttempt);
 	// checking if food web is linearly stable
 
 	void compEig(Species S[], Producer P[], ofstream& stabFile, ofstream& unstabFile, int addAttempt);

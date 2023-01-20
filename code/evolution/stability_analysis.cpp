@@ -225,50 +225,78 @@
 //	SAVING PARAMETERS
 	void saveEigenvalues(VectorXcd eigenvalues, ofstream& file, int addAttempt) {
 		// addAttempt and number of species
-		file << addAttempt << " " << Species::nTotal << " ";
+		file << addAttempt << " " << Species::nTotal;
 
 		// eigenvalues of all species in food webs
 		for (int i = 0; i < Species::nTotal; i++) {
-			file << eigenvalues(i).real() << " " << eigenvalues(i).imag() << " ";
+			file << " " << eigenvalues(i).real() << " " << eigenvalues(i).imag();
 		}
 
 		// zeroes for all empty entries in S[] and P[]
 		for (int i = Species::nTotal; i < nMAX; i++) {
-			file << 0 << " " << 0 << " ";
+			file <<  " " << 0 << " " << 0;
 		}
 
 		file << endl;
 	}
 
 
-	void saveEigenvectors(MatrixXcd eigenvectors, ofstream& file, int addAttempt) {
+	void saveEigenvectors(VectorXcd eigenvalues, MatrixXcd eigenvectors, ofstream& file, int addAttempt) {
 		// addAttempt and number of species
-		file << addAttempt << " " << Species::nTotal << " ";
-
+		file << addAttempt << " " << Species::nTotal << endl;
 		// eigenvectors of all species in food webs
 		for (int i = 0; i < Species::nTotal; i++) {
+			file << eigenvalues(i).real() << " " << eigenvalues(i).imag();
 			for (int j = 0; j < Species::nTotal; j++) {
-				file << eigenvectors(j,i).real() << " " << eigenvectors(j,i).imag() << " ";
+				file << " " << eigenvectors(j,i).real() << " " << eigenvectors(j,i).imag();
 			}
+			file << endl;
+			//for (int j = Species::nTotal; j < nMAX; j++) {
+			//	file << 0 << " " << 0 << " ";
+			//}
 		}
 
 		// zeroes for all empty entries in S[] and P[]
-		for (int i = Species::nTotal * Species::nTotal; i < nMAX * nMAX; i++) {
-			file << 0 << " " << 0 << " ";
-		}
+		//for (int i = Species::nTotal; i < nMAX; i++) {
+		//	file << 0 << " " << 0 << " ";
+		//}
 
 		file << endl;
 	}
 
+	void saveOthers(Species S[], Producer P[], double steadyStates[], ofstream& biomass, ofstream& level, ofstream& links, int addAttempt) {
+		// addAttempt and number of species
+		biomass << addAttempt << " " << Species::nTotal;
+		level << addAttempt << " " << Species::nTotal;
+		links << addAttempt << " " << Species::nTotal;
 
-	void saveParameters(Species S[], Producer P[], ofstream& sFile, ofstream& pFile, int addAttempt) {
+		// eigenvalues of all species in food webs
+		for (int i = 0; i < Species::nTotal; i++) {
+			biomass << " " << steadyStates[i];
+			level << " " << S[i].level;
+
+			int count = 0;
+			for (int j = 0; j < Species::nTotal; j++) {
+				if (S[i].consumers[j] > 0) {count++;}
+				else if (S[i].resources[j] > 0) {count++;}
+			}
+			links << " " << count;
+		}
+
+		biomass << endl;
+		level << endl;
+		links << endl;
+	}
+
+
+	void saveParameters(Species S[], Producer P[], double steadyStates[], ofstream& sFile, ofstream& pFile, int addAttempt) {
 		// saving parameters of Producers
 		for (int i = 0; i < Producer::nProducer; i++) {
 			// addAttempt
 			pFile << addAttempt << " ";
 
-			// index - addAttempt of invasion - level - final density - growth rate - decay rate
-			pFile << i << " " << P[i].addAttempt << " " << P[i].level << " " << P[i].density << " " << P[i].growth << " " << P[i].decay << " ";
+			// index - addAttempt of invasion - level - initial density - fixed density (S*) - growth rate - decay rate
+			pFile << i << " " << P[i].addAttempt << " " << P[i].level << " " << P[i].density << " " << steadyStates[i] << " " << P[i].growth << " " << P[i].decay << " ";
 
 			// index of other Species - interaction strength
 			for (int k = 0; k < nMAX; k++) {
@@ -283,8 +311,8 @@
 			// addAttempt
 			sFile << addAttempt << " ";
 
-			// index - addAttempt of invasion - level - final density - decay rate
-			sFile << k << " " << S[k].addAttempt << " " << S[k].level << " " << S[k].density << " " << S[k].decay << " ";
+			// index - addAttempt of invasion - level - initial density - fixed density (S*) - decay rate
+			sFile << k << " " << S[k].addAttempt << " " << S[k].level << " " << S[k].density << " " << steadyStates[k] << " " << S[k].decay << " ";
 
 			
 			// index of other Species - interaction strength(as resource) - interaction strength(as consumer)
@@ -299,7 +327,7 @@
 
 
 //	INVESTIGATING LINEAR STABILITY
-	void checkFeasibility(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, int addAttempt) {
+	void checkFeasibility(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, ofstream& biomass, ofstream& level, ofstream& links, int addAttempt) {
 		//	COMPUTING S* = R^(-1)*k
 		// declaring vectors and matrices
 		MatrixXd R(Species::nTotal, Species::nTotal);
@@ -350,7 +378,7 @@
 			cout << "The system does have a feasible steady state!\n";
 			
 			// checking for linear stability
-			checkLinearStability(S, P, steadyStates, stabVal, unstabVal, stabVec, unstabVec, addAttempt);		
+			checkLinearStability(S, P, steadyStates, stabVal, unstabVal, stabVec, unstabVec, biomass, level, links, addAttempt);		
 			cout << "---------------\n Steady states: \n---------------\n";
 			cout << Ssteady << "\n---------------\n\n";		
 		}
@@ -365,7 +393,7 @@
 	}
 
 
-	void checkLinearStability(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, int addAttempt)	{
+	void checkLinearStability(Species S[], Producer P[], double steadyStates[], ofstream& stabVal, ofstream& unstabVal, ofstream& stabVec, ofstream& unstabVec, ofstream& biomass, ofstream& level, ofstream& links, int addAttempt)	{
 		//	INITIALIZING
 		// declaring matrix and arrays
 		MatrixXd C(Species::nTotal, Species::nTotal);
@@ -390,13 +418,13 @@
 		EigenSolver<MatrixXd> es(C);
 		eigenvalues = es.eigenvalues();
 		eigenvectors = es.eigenvectors();
-		cout << C * eigenvectors << endl;
-		for (int i = 0; i < Species::nTotal; i++) {
-			for (int j = 0; j < Species::nTotal; j++) {
-				cout << eigenvectors(j,i).real() * eigenvalues(i).real() - eigenvectors(j,i).imag() * eigenvalues(i).imag() << " ";
-				cout << eigenvectors(j,i).imag() * eigenvalues(i).real() + eigenvectors(j,i).real() * eigenvalues(i).imag() << " ";
-			}
-		}
+		// cout << C * eigenvectors << endl;
+		// for (int i = 0; i < Species::nTotal; i++) {
+		// 	for (int j = 0; j < Species::nTotal; j++) {
+		// 		cout << eigenvectors(j,i).real() * eigenvalues(i).real() - eigenvectors(j,i).imag() * eigenvalues(i).imag() << " ";
+		// 		cout << eigenvectors(j,i).imag() * eigenvalues(i).real() + eigenvectors(j,i).real() * eigenvalues(i).imag() << " ";
+		// 	}
+		// }
 		
 		//	CHECKING LINEAR STABILITY
 		// if linearly stable
@@ -406,7 +434,8 @@
 
 			cout << "The steady states are linearly stable!\n\n";
 			saveEigenvalues(eigenvalues, stabVal, addAttempt);
-			saveEigenvectors(eigenvectors, stabVec, addAttempt);
+			saveEigenvectors(eigenvalues, eigenvectors, stabVec, addAttempt);
+			saveOthers(S, P, steadyStates, biomass, level, links, addAttempt);
 		}
 
 		else {
@@ -414,8 +443,9 @@
 			FoodWeb::stable = false;
 
 			cout << "The steady states are not linearly stable.\n\n";
-			saveEigenvalues(eigenvalues, unstabVal, addAttempt);
-			saveEigenvectors(eigenvectors, unstabVec, addAttempt);
+			saveEigenvalues(eigenvalues, stabVal, addAttempt);
+			saveEigenvectors(eigenvalues, eigenvectors, stabVec, addAttempt);
+			saveOthers(S, P, steadyStates, biomass, level, links, addAttempt);
 		}
 	}
 

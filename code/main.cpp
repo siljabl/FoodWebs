@@ -42,6 +42,9 @@ int main() {
 	// iteration - number of Species - feasibility - stability - convergence
 	// 1 - converged, 2 - decreasing amplitude, 9 - not converged
 	ofstream webData("../data/"+folder+"/stab_data.txt");			// behavior of food web
+	ofstream biomass("../data/"+folder+"/biomass.txt");
+	ofstream level("../data/"+folder+"/level.txt");
+	ofstream links("../data/"+folder+"/links.txt");
 
 	// data is saved as:
 	// iteration - l - S(0) - k - a - consumer - eta
@@ -64,9 +67,9 @@ int main() {
 	S[0] = s;
 
 	// running food web
-	checkFeasibility(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, 0);
-	timeSeries(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, webData, 0);
-	saveParameters(S, P, sFile, pFile, 0);
+	checkFeasibility(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, biomass, level, links, 0);
+	timeSeries(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, biomass, level, links, webData, 0);
+	saveParameters(S, P, steadyStates, sFile, pFile, 0);
 
 
 //	RUNNING EVOLUTION
@@ -79,15 +82,15 @@ int main() {
 		// adding invasive species
 		addSpecies(S, P, addAttempt);
 		updateTrophicLevel(S);
-		saveParameters(S, P, sFile, pFile, addAttempt);
+		saveParameters(S, P, steadyStates, sFile, pFile, addAttempt);
 
 		// printing number of species
 		cout << "Number of Species in food web " << Species::nTotal;
 		cout << ", number of Producers " << Producer::nProducer << endl << endl;
 
 		// running time series
-		checkFeasibility(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, addAttempt);
-		timeSeries(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, webData, addAttempt);
+		checkFeasibility(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, biomass, level, links, addAttempt);
+		timeSeries(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, biomass, level, links, webData, addAttempt);
 
 		if (Species::nTotal == 0) {
 			Producer s(addAttempt);
@@ -95,9 +98,9 @@ int main() {
 			S[0] = s;
 
 			// running food web
-			checkFeasibility(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, 0);
-			timeSeries(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, webData, 0);
-			saveParameters(S, P, sFile, pFile, 0);
+			checkFeasibility(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, biomass, level, links, 0);
+			timeSeries(S, P, steadyStates, stabVal, ustabVal, stabVec, ustabVec, biomass, level, links, webData, 0);
+			saveParameters(S, P, steadyStates, sFile, pFile, 0);
 		}
 		updateTrophicLevel(S);
 	}
@@ -108,6 +111,9 @@ int main() {
 	stabVec.close();
 	ustabVec.close();
 	webData.close();
+	biomass.close();
+	level.close();
+	links.close();
 	sFile.close();
 	pFile.close();
 
