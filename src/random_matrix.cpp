@@ -1,7 +1,7 @@
 
 // Script to compute eigenvalues of random matrices
 
-#include "src/parameters.cpp"
+#include "parameters.cpp"
 #include <iostream>
 #include <fstream>
 #include <random>
@@ -39,7 +39,7 @@ cin >> N;
 double prob = ((double)(N*N + 21*N - 28)) / (9*N*(N-1));
 cout << "Occupation probability: " << prob << endl;
 
-ofstream file("data/random_matrix/EigenMay_N" + to_string(N) + ".txt");
+ofstream file("../data/random_matrix/EigenMay_N" + to_string(N) + ".txt");
 
 for(int rep=0; rep<Nrep; rep++) {
 	MatrixXd C(N, N);		// community matrix

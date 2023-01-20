@@ -1,8 +1,8 @@
-#include "src/parameters.cpp"
-#include "src/food_web.cpp"
-#include "src/time_series.cpp"
-#include "src/stability_analysis.cpp"
-#include "src/species.cpp"
+#include "parameters.cpp"
+#include "food_web.cpp"
+#include "time_series.cpp"
+#include "stability_analysis.cpp"
+#include "species.cpp"
 #include <iostream>
 #include <sstream>
 #include <algorithm> // for std::find
@@ -33,24 +33,24 @@ int main() {
 
 //	FILES
 	// data is saved as: iteration - number of species - real - imaginary
-	ofstream stabVal("data/"+folder+"/eigval_stab.txt");			// eigenvalues of linearly stable food web
-	ofstream ustabVal("data/"+folder+"/eigval_unstab.txt");		// eigenvalues of linearly unstable food web
-	ofstream stabVec("data/"+folder+"/eigvec_stab.txt");			// eigenvalues of linearly stable food web
-	ofstream ustabVec("data/"+folder+"/eigvec_unstab.txt");		// eigenvalues of linearly unstable food web
+	ofstream stabVal("../data/"+folder+"/eigval_stab.txt");			// eigenvalues of linearly stable food web
+	ofstream ustabVal("../data/"+folder+"/eigval_unstab.txt");		// eigenvalues of linearly unstable food web
+	ofstream stabVec("../data/"+folder+"/eigvec_stab.txt");			// eigenvalues of linearly stable food web
+	ofstream ustabVec("../data/"+folder+"/eigvec_unstab.txt");		// eigenvalues of linearly unstable food web
 
 	// data is saved as:
 	// iteration - number of Species - feasibility - stability - convergence
 	// 1 - converged, 2 - decreasing amplitude, 9 - not converged
-	ofstream webData("data/"+folder+"/stab_data.txt");			// behavior of food web
-	ofstream biomass("data/"+folder+"/biomass.txt");
-	ofstream level("data/"+folder+"/level.txt");
-	ofstream links("data/"+folder+"/links.txt");
+	ofstream webData("../data/"+folder+"/stab_data.txt");			// behavior of food web
+	ofstream biomass("../data/"+folder+"/biomass.txt");
+	ofstream level("../data/"+folder+"/level.txt");
+	ofstream links("../data/"+folder+"/links.txt");
 
 	// data is saved as:
 	// iteration - l - S(0) - k - a - consumer - eta
 	// iteration - l - S(0) - a - consumer/resource - eta - beta*eta	
-	ofstream sFile("data/"+folder+"/species_param.txt");			// Species parameters
-	ofstream pFile("data/"+folder+"/producer_param.txt");			// Producer parameters
+	ofstream sFile("../data/"+folder+"/species_param.txt");			// Species parameters
+	ofstream pFile("../data/"+folder+"/producer_param.txt");			// Producer parameters
 	
 	
 
