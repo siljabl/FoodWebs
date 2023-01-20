@@ -1,6 +1,3 @@
 *.egg-info
 data
-analysis
-figs
-presentations
-ScientificReports
+private
