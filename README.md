@@ -1,6 +1,7 @@
 # FoodWebs
 
 This repository contains C++ code for generating simulation data on the evolution of ecological networks using generalized Lotka–Volterra dynamics.
+The data is used [here](https://doi.org/10.1038/s41598-022-17379-6).
 
 ![Food web assembly over six invasions](illustration.png)
 
